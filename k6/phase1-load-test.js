@@ -46,8 +46,8 @@ export const options = {
 };
 
 export default function () {
-  // 유니크한 userId 생성 (UUID v4 간략 버전)
-  const userId = `user-${Math.random().toString(36).slice(2, 11)}-${Date.now()}`;
+  // 유니크한 userId — 매 요청이 INSERT 경로를 타도록 강제
+  const userId = `user-${__VU}-${__ITER}`;
 
   const payload = JSON.stringify({ userId });
   const params = {

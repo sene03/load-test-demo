@@ -16,7 +16,7 @@ public class PointService {
     @Value("${event.max-claims}")
     private int maxClaims;
 
-    @Transactional
+    @Transactional // 하나의 트랜잭션으로 묶기
     public ClaimResult claim(String eventId, String userId) {
         if (pointLedgerRepository.existsByEventIdAndUserId(eventId, userId)) {
             return ClaimResult.DUPLICATE;

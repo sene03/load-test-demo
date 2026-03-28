@@ -8,9 +8,9 @@ spring:
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 5        # 튜닝 변수: 10, 20으로 증가 테스트
-      minimum-idle: 5
-      connection-timeout: 30000
+      maximum-pool-size: 1        # 튜닝 변수: 2, 5, 10으로 증가 테스트
+      minimum-idle: 1
+      connection-timeout: 3000
 
   jpa:
     hibernate:
@@ -27,7 +27,7 @@ server:
     accept-count: 100
 
 event:
-  max-claims: 1000               # 포인트 지급 최대 인원
+  max-claims: 1000            # 포인트 지급 최대 인원
 
 management:
   endpoints:
