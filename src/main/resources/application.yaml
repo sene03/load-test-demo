@@ -4,6 +4,12 @@ spring:
   jmx:
     enabled: true   # Tomcat 스레드 메트릭 활성화 (TomcatMetricsBinder가 JMX MBean 사용)
 
+  data:
+    redis:
+      host: localhost   # docker에서는 SPRING_DATA_REDIS_HOST 환경변수로 override
+      port: 6379
+      timeout: 500ms   # 장애 감지를 빠르게 (폴백 지연 최소화)
+
   datasource:
     url: jdbc:mysql://localhost:3306/test_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root

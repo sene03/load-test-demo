@@ -1,4 +1,14 @@
 services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
   mysql:
     image: mysql:8.4.8
     deploy:
@@ -34,10 +44,13 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
       JAVA_OPTS: "-Xms512m -Xmx1g"   # heap 고정 (GC 튜닝 변수)
+      SPRING_DATA_REDIS_HOST: redis
     ports:
       - "8080:8080"
     depends_on:
       mysql:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
 
