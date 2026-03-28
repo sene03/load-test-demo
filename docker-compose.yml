@@ -1,11 +1,16 @@
 services:
   mysql:
     image: mysql:8.4.8
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1.0'
-#          memory: 512m
+    deploy:
+      resources:
+        limits:
+          cpus: '6.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
+          memory: 2g
+    command:
+      - --slow_query_log=ON          # 슬로우 쿼리 로그 활성화
+      - --long_query_time=0.1        # 0.1초(100ms) 이상 걸린 쿼리 기록
+      - --log_error_verbosity=3      # 에러 로그 상세도 최대 (deadlock 포함)
+      - --innodb_print_all_deadlocks=ON  # 데드락 발생 시 에러 로그에 출력
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: test_db
@@ -19,17 +24,16 @@ services:
 
   api:
     build: .
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
+          memory: 2g    # JVM heap(1g) + metaspace/스레드 스택 여유분
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/test_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1.0'
-#          memory: 512m
-#    environment:
-#      JAVA_OPTS: "-Xms256m -Xmx256m"
+      JAVA_OPTS: "-Xms512m -Xmx1g"   # heap 고정 (GC 튜닝 변수)
     ports:
       - "8080:8080"
     depends_on:
@@ -37,25 +41,36 @@ services:
         condition: service_healthy
 
 
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
-    depends_on:
-      - prometheus
-
-volumes:
-  grafana_data:
+#  prometheus:
+#    image: prom/prometheus
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#    ports:
+#      - "9090:9090"
+#
+#  influxdb:
+#    image: influxdb:1.8
+#    ports:
+#      - "8086:8086"
+#    environment:
+#      - INFLUXDB_DB=k6
+#    volumes:
+#      - influxdb_data:/var/lib/influxdb
+#
+#  grafana:
+#    image: grafana/grafana
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - GF_SECURITY_ADMIN_PASSWORD=admin
+#    volumes:
+#      - grafana_data:/var/lib/grafana
+#      - ./grafana/provisioning:/etc/grafana/provisioning
+#      - ./grafana/dashboards:/var/lib/grafana/dashboards
+#    depends_on:
+#      - prometheus
+#      - influxdb
+#
+#volumes:
+#  grafana_data:
+#  influxdb_data:

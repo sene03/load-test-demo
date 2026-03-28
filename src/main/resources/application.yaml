@@ -1,6 +1,8 @@
 spring:
   application:
     name: load-test-demo
+  jmx:
+    enabled: true   # Tomcat 스레드 메트릭 활성화 (TomcatMetricsBinder가 JMX MBean 사용)
 
   datasource:
     url: jdbc:mysql://localhost:3306/test_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -8,9 +10,8 @@ spring:
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 1        # 튜닝 변수: 2, 5, 10으로 증가 테스트
-      minimum-idle: 1
-      connection-timeout: 3000
+      maximum-pool-size: 10        # default 10
+      connection-timeout: 10000
 
   jpa:
     hibernate:
@@ -22,7 +23,7 @@ spring:
 server:
   tomcat:
     threads:
-      max: 10                     # 튜닝 변수: 20, 50, 100, 200으로 증가 테스트
+      max: 200                     # 튜닝 변수: 20, 50, 100, 200으로 증가 테스트
 #      min-spare: 10
 #    accept-count: 100
 
@@ -44,3 +45,11 @@ management:
 logging:
   level:
     root: INFO
+    # ↓ 부하 테스트 중 비활성화 (로그 I/O가 성능에 영향)
+    # HikariCP: 커넥션 획득/반납/타임아웃 상세 로그
+#    com.zaxxer.hikari: DEBUG
+#    com.zaxxer.hikari.pool.HikariPool: DEBUG
+    # SQL: 실행 쿼리 + 데드락 확인용
+#    org.hibernate.SQL: DEBUG
+    # Spring TX: 트랜잭션 시작/커밋/롤백 추적
+#    org.springframework.transaction: DEBUG

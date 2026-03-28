@@ -2,13 +2,13 @@
  * Phase 1 Load Test — Spring Boot + MySQL Baseline
  *
  * 실행 방법:
- *   k6 run -e TARGET_RPS=50 k6/phase1-load-test.js
+ *   k6 run --out influxdb=http://localhost:8086/k6 -e TARGET_RPS=50 k6/phase1-load-test.js
  *
  * RPS 단계별 테스트 (각 단계 독립 실행):
- *   k6 run -e TARGET_RPS=50  k6/phase1-load-test.js
- *   k6 run -e TARGET_RPS=100 k6/phase1-load-test.js
- *   k6 run -e TARGET_RPS=150 k6/phase1-load-test.js
- *   k6 run -e TARGET_RPS=200 k6/phase1-load-test.js
+ *   k6 run --out influxdb=http://localhost:8086/k6 -e TARGET_RPS=50  k6/phase1-load-test.js
+ *   k6 run --out influxdb=http://localhost:8086/k6 -e TARGET_RPS=100 k6/phase1-load-test.js
+ *   k6 run --out influxdb=http://localhost:8086/k6 -e TARGET_RPS=150 k6/phase1-load-test.js
+ *   k6 run --out influxdb=http://localhost:8086/k6 -e TARGET_RPS=200 k6/phase1-load-test.js
  *
  * 포화점 기준: p95 > 300ms OR error rate > 1%
  * 409(DUPLICATE) / 410(SOLD_OUT) 은 정상 응답으로 처리

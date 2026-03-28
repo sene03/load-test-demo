@@ -8,3 +8,11 @@ datasources:
     access: proxy
     isDefault: true
     editable: true
+
+  - name: InfluxDB
+    type: influxdb
+    uid: influxdb          # 대시보드의 ${DS_INFLUXDB}가 이 UID를 찾음
+    url: http://influxdb:8086
+    access: proxy
+    editable: true
+    database: k6
