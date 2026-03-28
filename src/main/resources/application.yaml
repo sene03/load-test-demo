@@ -33,12 +33,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, metrics, threaddump, prometheus
+        include: "*" # 전부 다 열기
   prometheus:
     metrics:
       export:
         enabled: true
-  endpoint:
     health:
       show-details: always
 
