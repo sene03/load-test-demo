@@ -19,7 +19,7 @@ import { check } from 'k6';
 import { Rate, Trend } from 'k6/metrics';
 
 const TARGET_RPS = parseInt(__ENV.TARGET_RPS || '50');
-const DURATION = __ENV.DURATION || '30s';
+const DURATION = __ENV.DURATION || '60s';
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080';
 const EVENT_ID = __ENV.EVENT_ID || '1';
 
@@ -29,13 +29,22 @@ const successCount = new Rate('success_rate');
 
 export const options = {
   scenarios: {
-    constant_load: {
+//    warmup: {
+//      executor: 'constant-arrival-rate',
+//      rate: 10,
+//      timeUnit: '1s',
+//      duration: '30s',
+//      preAllocatedVUs: 20,
+//      maxVUs: 40,
+//    },
+    measure: {
       executor: 'constant-arrival-rate',
       rate: TARGET_RPS,
       timeUnit: '1s',
-      duration: DURATION,
-      preAllocatedVUs: TARGET_RPS * 2,
-      maxVUs: TARGET_RPS * 4,
+      duration: '60s',
+//      startTime: '30s',      // 워밍업 끝난 후 시작
+      preAllocatedVUs: TARGET_RPS * 4, // RPS 유지하기 위해 충분한 worker를 확보
+      maxVUs: TARGET_RPS * 8, // 부하가 증가하거나 응답이 느려지면 VU를 추가로 늘릴 수 있게 허용
     },
   },
   thresholds: {
