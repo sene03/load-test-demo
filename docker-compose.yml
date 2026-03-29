@@ -4,7 +4,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '6.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
+          cpus: '4.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
           memory: 2g
     command:
       - --slow_query_log=ON          # 슬로우 쿼리 로그 활성화

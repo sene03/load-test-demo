@@ -11,7 +11,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10        # default 10
-      connection-timeout: 10000
+      connection-timeout: 3000
 
   jpa:
     hibernate:
@@ -44,11 +44,11 @@ management:
 
 logging:
   level:
-    root: INFO
+    root: debug
     # ↓ 부하 테스트 중 비활성화 (로그 I/O가 성능에 영향)
     # HikariCP: 커넥션 획득/반납/타임아웃 상세 로그
-#    com.zaxxer.hikari: DEBUG
-#    com.zaxxer.hikari.pool.HikariPool: DEBUG
+    com.zaxxer.hikari: DEBUG
+    com.zaxxer.hikari.pool.HikariPool: DEBUG
     # SQL: 실행 쿼리 + 데드락 확인용
 #    org.hibernate.SQL: DEBUG
     # Spring TX: 트랜잭션 시작/커밋/롤백 추적
