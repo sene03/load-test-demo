@@ -1,6 +1,8 @@
 package com.fisa.service;
 
 import com.fisa.domain.PointLedger;
+import com.fisa.event.PointEvent;
+import com.fisa.kafka.PointEventProducer;
 import com.fisa.repository.PointLedgerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -19,6 +22,7 @@ public class PointService {
 
     private final PointLedgerRepository pointLedgerRepository;
     private final StringRedisTemplate redisTemplate;
+    private final PointEventProducer pointEventProducer;
 
     @Value("${event.max-claims}")
     private int maxClaims;
@@ -54,10 +58,15 @@ public class PointService {
             return switch (result) {
                 case "DUPLICATE" -> ClaimResult.DUPLICATE;
                 case "SOLD_OUT"  -> ClaimResult.SOLD_OUT;
-                default          -> saveToDb(eventId, userId); // SUCCESS → DB write
+                // SUCCESS → Kafka 비동기 발행 (DB write는 consumer가 처리)
+                default          -> {
+                    pointEventProducer.publish(new PointEvent(eventId, userId, LocalDateTime.now().toString()));
+                    yield ClaimResult.SUCCESS;
+                }
             };
 
-        } catch (Exception e) {
+        } catch (org.springframework.data.redis.RedisConnectionFailureException |
+                 org.springframework.data.redis.RedisSystemException e) {
             log.warn("Redis unavailable, falling back to DB: {}", e.getMessage());
             return claimFromDb(eventId, userId);
         }

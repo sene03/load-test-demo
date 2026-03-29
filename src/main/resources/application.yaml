@@ -19,6 +19,22 @@ spring:
       maximum-pool-size: 10        # default 10
       connection-timeout: 3000
 
+  kafka:
+    bootstrap-servers: localhost:9092   # docker에서는 SPRING_KAFKA_BOOTSTRAP_SERVERS 환경변수로 override
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 1         # 리더 확인만 (속도 우선)
+      retries: 0      # 실패 시 fallback 처리로 넘김
+    consumer:
+      group-id: point-ledger-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "com.fisa.event"
+        spring.json.value.default.type: "com.fisa.event.PointEvent"
+
   jpa:
     hibernate:
       ddl-auto: update
