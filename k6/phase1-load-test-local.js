@@ -25,6 +25,9 @@ const DURATION   = __ENV.DURATION  || '60s';
 const BASE_URL   = __ENV.BASE_URL  || 'http://localhost:8080';
 const EVENT_ID   = __ENV.EVENT_ID  || '1';
 
+// 30만명이 동시에 선착순 자리를 노리는 시나리오 (Phase 2, 3과 동일한 조건)
+const USER_POOL_SIZE = 300_000;
+
 const errorRate     = new Rate('error_rate');        // timeout + 5xx
 const successRate   = new Rate('success_rate');      // 200 SUCCESS
 const timeoutRate   = new Rate('timeout_rate');      // status=0: k6 timeout / 연결 실패
@@ -68,7 +71,7 @@ export const options = {
 };
 
 export default function () {
-  const userId  = `user-${__VU}-${__ITER}`;
+  const userId  = `user-${Math.floor(Math.random() * USER_POOL_SIZE)}`;
   const payload = JSON.stringify({ userId });
   const params  = {
     headers: { 'Content-Type': 'application/json' },
