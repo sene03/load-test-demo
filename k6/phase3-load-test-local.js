@@ -127,7 +127,9 @@ export function handleSummary(data) {
   // 처리량
   const totalReqs   = m.http_reqs?.values?.count ?? 0;
   const actualRps   = m.http_reqs?.values?.rate  ?? 0;
-  const measureRps  = m['http_reqs{phase:measure}']?.values?.rate ?? 0;
+  const measureCount = m['http_reqs{phase:measure}']?.values?.count ?? 0;
+  const durationSec  = parseFloat(DURATION.replace('s',''));
+  const measureRps   = durationSec > 0 ? measureCount / durationSec : 0;
   const dropped     = m.dropped_iterations?.values?.count ?? 0;
   const droppedRate = m.dropped_iterations?.values?.rate  ?? 0;
 
@@ -173,8 +175,8 @@ export function handleSummary(data) {
   console.log(`
   === Phase 3 Load Test (Kafka Async) [${displayTime}] ===
   Target RPS        : ${TARGET_RPS}
-  Actual RPS (전체) : ${actualRps.toFixed(2)} /s
-  Actual RPS (측정) : ${measureRps.toFixed(2)} /s
+  Actual RPS (전체평균): ${actualRps.toFixed(2)} /s  (warmup 포함 전체 평균)
+  Actual RPS (측정구간): ${measureRps.toFixed(2)} /s  (measure ${DURATION} 기준)
   Total Requests    : ${totalReqs}
   Dropped           : ${dropped} (${droppedRate.toFixed(2)}/s)
   p95 Latency (전체): ${latency['p(95)']?.toFixed(2) ?? 'N/A'} ms
