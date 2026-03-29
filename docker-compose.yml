@@ -60,15 +60,14 @@ services:
           cpus: '2.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
           memory: 2g    # JVM heap(1g) + metaspace/스레드 스택 여유분
     environment:
-#      EVENT_MAX_CLAIMS: 500000 # TODO: 이거 적용안됨
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/test_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
       JAVA_OPTS: "-Xms512m -Xmx1g"   # heap 고정 (GC 튜닝 변수)
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-    ports:
-      - "8080:8080"
+      SPRING_KAFKA_PRODUCER_PROPERTIES_MAX_BLOCK_MS: 0   # 버퍼 포화 시 즉시 예외 (60s 블록 방지)
+    # ports 없음 — nginx가 유일한 외부 진입점 (--scale 호환을 위해 container_name도 없음)
     depends_on:
       mysql:
         condition: service_healthy
@@ -76,6 +75,15 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
 
 
 #  prometheus:

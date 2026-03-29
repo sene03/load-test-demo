@@ -26,6 +26,8 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: 1         # 리더 확인만 (속도 우선)
       retries: 0      # 실패 시 fallback 처리로 넘김
+      properties:
+        '[max.block.ms]': 0     # 버퍼 포화 시 즉시 예외 (60s 블록 방지, 점 포함 key는 [] 필요)
     consumer:
       group-id: point-ledger-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
