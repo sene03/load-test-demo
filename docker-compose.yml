@@ -14,7 +14,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '6.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
+          cpus: '4.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
           memory: 2g
     command:
       - --slow_query_log=ON          # 슬로우 쿼리 로그 활성화
@@ -40,6 +40,7 @@ services:
           cpus: '2.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
           memory: 2g    # JVM heap(1g) + metaspace/스레드 스택 여유분
     environment:
+#      EVENT_MAX_CLAIMS: 500000 # TODO: 이거 적용안됨
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/test_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
