@@ -138,9 +138,10 @@ export function handleSummary(data) {
   // 처리량
   const totalReqs    = m.http_reqs?.values?.count ?? 0;
   const actualRps    = m.http_reqs?.values?.rate  ?? 0;
-  const measureCount = m['http_reqs{phase:measure}']?.values?.count ?? 0;
-  // rate는 tagged metric에서 누락되는 k6 버그 → count / duration으로 직접 계산
+  const warmupSec    = parseFloat(WARMUP_DURATION.replace('s',''));
   const durationSec  = parseFloat(DURATION.replace('s',''));
+  const warmupCount  = Math.round(WARMUP_RPS * warmupSec);
+  const measureCount = Math.max(0, totalReqs - warmupCount);
   const measureRps   = durationSec > 0 ? measureCount / durationSec : 0;
   const dropped      = m.dropped_iterations?.values?.count ?? 0;
   const droppedRate  = m.dropped_iterations?.values?.rate  ?? 0;
