@@ -66,7 +66,6 @@ services:
       JAVA_OPTS: "-Xms512m -Xmx1g"   # heap 고정 (GC 튜닝 변수)
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_KAFKA_PRODUCER_PROPERTIES_MAX_BLOCK_MS: 0   # 버퍼 포화 시 즉시 예외 (60s 블록 방지)
     # ports 없음 — nginx가 유일한 외부 진입점 (--scale 호환을 위해 container_name도 없음)
     depends_on:
       mysql:
