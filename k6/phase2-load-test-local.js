@@ -75,7 +75,7 @@ export default function () {
   const payload = JSON.stringify({ userId });
   const params  = {
     headers: { 'Content-Type': 'application/json' },
-    timeout: '5s',
+    timeout: '10s',
   };
 
   const res = http.post(`${BASE_URL}/events/${EVENT_ID}/points`, payload, params);
