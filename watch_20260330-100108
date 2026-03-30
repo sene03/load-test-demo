@@ -1,0 +1,37 @@
+=== Tomcat Worker Threads ===                                                        
+{                                                                                    
+  "busy": 84,                                                                        
+  "max": 200,                                                                        
+  "running": 84,                                                                     
+  "waiting": 116,                                                                    
+  "blocked": 0                                                                       
+}                                                                                    
+                                                                                     
+=== HikariCP ===                                                                     
+Active:  0.0                                                                         
+Pending: 0.0                                                                         
+Idle:    10.0                                                                        
+                                                                                     
+=== Redis ===                                                                        
+Ops/sec: 33473                                                                       
+Clients: 2                                                                           
+Granted (event별):                                                                   
+  event:1:count                  100000                                              
+                                                                                     
+=== Data Consistency (Redis granted vs DB ledger) ===                                
+  event 1         Redis: 100000    DB: 100000                                        
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
