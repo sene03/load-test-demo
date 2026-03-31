@@ -57,14 +57,14 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0
-          memory: 2g    # JVM heap(1g) + metaspace/스레드 스택 여유분
+          cpus: '4.0'      # 튜닝 변수: 1.0 / 2.0 / 4.0 (3파티션 concurrency=3 테스트용)
+          memory: 4g    # buffer.memory 256MB 확보를 위해 2g → 4g 증설
     environment:
 #      EVENT_MAX_CLAIMS: 500000 # TODO: 이거 적용안됨
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/test_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
-      JAVA_OPTS: "-Xms512m -Xmx1g"   # heap 고정 (GC 튜닝 변수)
+      JAVA_OPTS: "-Xms512m -Xmx2g"   # heap 1g → 2g (buffer.memory 256MB 여유분 확보)
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:

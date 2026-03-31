@@ -37,4 +37,7 @@ out/
 .vscode/
 
 .claude
-/results/
+/results/db-logs
+/results/html
+/results/json
+.DS_Store

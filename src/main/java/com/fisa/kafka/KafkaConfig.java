@@ -37,7 +37,9 @@ public class KafkaConfig {
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
                 ProducerConfig.ACKS_CONFIG, "1",
-                ProducerConfig.RETRIES_CONFIG, 3
+                ProducerConfig.RETRIES_CONFIG, 3,
+                ProducerConfig.BUFFER_MEMORY_CONFIG, 268435456L,  // 256MB (기본 32MB → 8배)
+                ProducerConfig.LINGER_MS_CONFIG, 5                // 5ms 대기 후 배치 전송 (기본 0ms)
         ));
     }
 
@@ -63,6 +65,7 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(kafkaConsumerFactory);
+        factory.setConcurrency(3); // 파티션 수(3)와 동일하게 설정 — 각 스레드가 1개 파티션 전담
         return factory;
     }
 

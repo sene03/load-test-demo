@@ -27,7 +27,7 @@ public class PointEventProducer {
     public void publish(PointEvent event) {
         try {
             String payload = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send(TOPIC, event.getEventId(), payload)
+            kafkaTemplate.send(TOPIC, event.getUserId(), payload)  // userId 기반 파티셔닝 — 3 파티션에 고르게 분산
                     .whenComplete((result, ex) -> {
                         if (ex != null) {
                             log.error("Kafka produce failed: eventId={}, userId={} — writing to fallback",
